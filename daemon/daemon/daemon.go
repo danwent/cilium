@@ -289,6 +289,7 @@ func (d *Daemon) init() error {
 	fw.WriteString(common.FmtDefineAddress("HOST_IP", hostIP))
 	fmt.Fprintf(fw, "#define HOST_ID %d\n", policy.GetReservedID(labels.ID_NAME_HOST))
 	fmt.Fprintf(fw, "#define WORLD_ID %d\n", policy.GetReservedID(labels.ID_NAME_WORLD))
+	fmt.Fprintf(fw, "#define LB_RR_MAX_SEQ %d\n", lbmap.MaxSeq)
 
 	fw.Flush()
 	f.Close()
@@ -313,11 +314,17 @@ func (d *Daemon) init() error {
 		if _, err := lbmap.RevNat6Map.OpenOrCreate(); err != nil {
 			return err
 		}
+		if _, err := lbmap.RRSeq6Map.OpenOrCreate(); err != nil {
+			return err
+		}
 		if d.conf.IPv4Enabled {
 			if _, err := lbmap.Service4Map.OpenOrCreate(); err != nil {
 				return err
 			}
 			if _, err := lbmap.RevNat4Map.OpenOrCreate(); err != nil {
+				return err
+			}
+			if _, err := lbmap.RRSeq4Map.OpenOrCreate(); err != nil {
 				return err
 			}
 		}

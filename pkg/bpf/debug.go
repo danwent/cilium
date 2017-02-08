@@ -54,6 +54,7 @@ const (
 	DBG_TO_HOST
 	DBG_TO_STACK
 	DBG_PKT_HASH
+	DBG_RR_SLAVE_SEL
 	DBG_LB6_LOOKUP_MASTER
 	DBG_LB6_LOOKUP_MASTER_FAIL
 	DBG_LB6_LOOKUP_SLAVE
@@ -154,6 +155,8 @@ func (n *DebugMsg) Dump(data []byte, prefix string) {
 		fmt.Printf("Going to the stack, policy-skip=%d\n", n.Arg1)
 	case DBG_PKT_HASH:
 		fmt.Printf("Packet hash=%d (%#x), selected_service=%d\n", n.Arg1, n.Arg1, n.Arg2)
+	case DBG_RR_SLAVE_SEL:
+		fmt.Printf("RR slave selection hash=%d (%#x), selected_service=%d\n", n.Arg1, n.Arg1, n.Arg2)
 	case DBG_LB6_LOOKUP_MASTER:
 		fmt.Printf("Master service lookup, addr.p4=%x key.dport=%d\n", n.Arg1, common.Swab16(uint16(n.Arg2)))
 	case DBG_LB6_LOOKUP_MASTER_FAIL:
