@@ -247,4 +247,7 @@ millions of containers.
 Security
 --------
 
+.. toctree::
+
+   policy
 

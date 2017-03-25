@@ -29,7 +29,7 @@ The remainder of this documentation is divided into four sections:
 
 * **Installation + Configuration Guide:**  Detailed instructions for installing + configuring Cilium in different configurations.
 
-* ** Developer / Contributor Guide:** Instructures for those looking to develop and contribute modifications to the Cilium code or documentation.
+* **Developer / Contributor Guide:** Instructures for those looking to develop and contribute modifications to the Cilium code or documentation.
 
 
 Getting Help

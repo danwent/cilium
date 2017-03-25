@@ -111,8 +111,8 @@ ip6tables rule to achieve this is:
 This will masquerade all packets with a source of ``beef::/64`` with the
 public IPv6 address of ``em1`` as they leave ``em1``
 
-Integrations
-============
+Container Platform Integrations
+-------------------------------
 
 .. toctree::
 
