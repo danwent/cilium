@@ -1,5 +1,5 @@
-Installation
-============
+Cilium Installation & Configuration Guide
+=========================================
 
 .. toctree::
 
@@ -67,7 +67,7 @@ The following tests connectivity from a container to the outside world:
 
 ::
 
-    $ sudo docker run --rm -ti --net cilium -l client noironetworks/nettools ping6 www.google.com
+    $ sudo docker run --rm -ti --net cilium -l client cilium/demo-client ping6 www.google.com
     PING www.google.com(zrh04s07-in-x04.1e100.net) 56 data bytes
     64 bytes from zrh04s07-in-x04.1e100.net: icmp_seq=1 ttl=56 time=7.84 ms
     64 bytes from zrh04s07-in-x04.1e100.net: icmp_seq=2 ttl=56 time=8.63 ms
@@ -110,3 +110,11 @@ ip6tables rule to achieve this is:
 
 This will masquerade all packets with a source of ``beef::/64`` with the
 public IPv6 address of ``em1`` as they leave ``em1``
+
+Integrations
+============
+
+.. toctree::
+
+   docker
+   k8s
