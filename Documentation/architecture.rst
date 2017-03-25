@@ -1,22 +1,59 @@
-Concepts
-========
+Cilium Architecture Guide
+=========================
 
-The concepts sections introduces you to the base concepts of Cilium and 
+The goal of this document is to describe the components of the Cilium architecture, and the different models for deploying Cilium within
+your datacenter or cloud environment.  It focuses on the higher-level understanding required to run a full Cilium deployment and understand
+its behavior.  You can then use the more detailed Cilium Installation & Configuration Guide to understand the details of setting up Cilium.
+
+The concepts sections introduces you to the base concepts of Cilium and
 introduces you to all the components.
 
-.. toctree::
+Cilium Components
+-----------------
 
-   policy
+A deployment of Cilium consists of the following components running on each Linux container host in the container cluster:
 
-Overview
---------
+* **Cilium Agent:** Userspace daemon that interacts with the container runtime to setup networking for each container.  Has an API
+  for configuring network security policies, extracting network visibility data, etc.
 
-What is Cilium?
-~~~~~~~~~~~~~~~
+* **Cilium CLI Client:** Simple CLI client for communicating with the local Cilium Agent, for example, to configure network security or visibility
+  policies.
 
-Cilium is an open source platform which provides networking, visibility 
-and control for application containers.
+* **Linux Kernel BPF:** Integrated capability of the Linux kernel to accept compiled bytecode that is run at various hook/trace points within
+  the kernel.  Cilium compiles BPF programs and has the kernel run them at key points in the network stack to have visibility and control over all
+  network traffic in/out of all containers.
 
+
+In addition to the components that run on each Linux container host, Cilium leverages a key-value store (e.g., etcd, consul) to
+share data between Cilium Agents running on differnet nodes.
+
+TODO: need a graphic here.
+
+Cilium Agent
+^^^^^^^^^^^^
+
+TODO
+
+Cilium CLI Client
+^^^^^^^^^^^^^^^^^
+
+TODO
+
+Linux Kernel BPF
+^^^^^^^^^^^^^^^^
+
+TODO
+
+Key-Value Store
+^^^^^^^^^^^^^^^
+The Key-Value (KV) Store is used for the following state:
+* policy identities: list of labels <=> policy identity identifier
+* gloabl services: global service id to VIP association (optional)
+* Encapsulation VTEP mapping (optional)
+
+To simplify things in a larger key-value store can be the same one used by the container
+orchestrator (e.g., Kubenetes using etcd).  In single node Cilium deployments used for basic
+testing/learning, Cilium can use a "local store", avoiding the need to setup a dedicated K-V store.
 
 Networking
 ----------
@@ -27,7 +64,7 @@ document describes the model in detail and is mainly aimed at developers
 and users who want to gain deep understanding.
 
 Addressing
-~~~~~~~~~~
+^^^^^^^^^^
 
 Each container receives a global IPv6 plus an optional private IPv4
 address which empowers the container to initiate connections to any
@@ -74,7 +111,7 @@ stack and is used to reach the local network stack, e.g. Kubernetes
 health checks. See [host connectivity] for additional details.
 
 Example
-^^^^^^^
+~~~~~~~
 
 ::
 
@@ -111,7 +148,7 @@ IPv4 connectivity is supported, its existence is to provide legacy
 support.
 
 NAT46
-~~~~~
+^^^^^
 
 In order to allow for an IPv4 transition period. Cilium can freely
 translate between IPv6 and IPv4 within some restrictions. For this
@@ -130,7 +167,7 @@ container to create an incentive for application developers to move to
 IPv6.
 
 DNS46
-~~~~~
+^^^^^
 
 DNS46 is implemented by various DNS servers including BIND and PowerDNS.
 It allows to convert IPv4 ``A`` responses into IPV6 ``AAAA`` responses
@@ -152,7 +189,7 @@ keep to the per connection flow cache (TCP metrics) which allows to
 terminate millions of connections in each container.
 
 Direct Routing
-~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^
 
 This is the standard method and selected if no additional configuration
 is provided. In this mode, Cilium will hand all packets which are not

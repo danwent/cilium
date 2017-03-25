@@ -32,6 +32,10 @@ The remainder of this documentation is divided into three sections:
 Getting Help
 ------------
 
+We use Github issues to maintain a list of `Cilium Frequently Asks Questions (FAQ)
+<https://github.com/cilium/cilium/issues?utf8=%E2%9C%93&q=is%3Aissue%20label%3Aquestion%20>`_ .  Check there to see if you questions
+is already addressed.
+
 The best way to get help if you get stuck is to contact us on the `Cilium Slack channel <https://cilium.herokuapp.com>`_ .
 
 If you’re confident that you’ve found a bug, please go ahead and create an issue on our `Github <https://github.com/cilium/cilium/issues>`_.

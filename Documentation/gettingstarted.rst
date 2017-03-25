@@ -182,7 +182,7 @@ To test this out, we'll make an HTTP request to Service1 from a container with t
 
 ::
 
-    $ docker run --rm -ti --net cilium -l "id.service2" tgraf/netperf ping service1-instance1
+    $ docker run --rm -ti --net cilium -l "id.service2" cilium/demo-client ping service1-instance1
     PING service1-instance1 (10.11.250.189): 56 data bytes
     64 bytes from 10.11.250.189: seq=4 ttl=64 time=0.100 ms
     64 bytes from 10.11.250.189: seq=5 ttl=64 time=0.107 ms
@@ -199,7 +199,7 @@ Now let's run the same ping request to Service1 from a container that does not h
 
 ::
 
-    $ docker run --rm -ti --net cilium tgraf/netperf ping service1-instance1
+    $ docker run --rm -ti --net cilium cilium/demo-client ping service1-instance1
 
 You will see no ping replies, as all requests are dropped by the Cilium security policy.
 
@@ -229,13 +229,13 @@ To see this, run:
 
 ::
 
-    $ docker run --rm -ti --net cilium -l "id.service2" tgraf/netperf curl -si 'http://service1-instance1/public'
+    $ docker run --rm -ti --net cilium -l "id.service2" cilium/demo-client curl -si 'http://service1-instance1/public'
 
 and
 
 ::
 
-    $ docker run --rm -ti --net cilium -l "id.service2" tgraf/netperf curl -si 'http://service1-instance1/private'
+    $ docker run --rm -ti --net cilium -l "id.service2" cilium/demo-client curl -si 'http://service1-instance1/private'
 
 Both return HTTP 404 errors, indicating that the requests were allowed to reach the API services (FIXME: we need a container image
 that actually responds on these URLs).
@@ -273,20 +273,22 @@ Create a file with this contents and name it l7_aware_policy.json .  Then import
 
 ::
 
-    $ docker run --rm -ti --net cilium -l "id.service2" tgraf/netperf curl -si 'http://service1-instance1/public'
+    $ docker run --rm -ti --net cilium -l "id.service2" cilium/demo-client curl -si 'http://service1-instance1/public'
 
 and
 
 ::
 
-    $ docker run --rm -ti --net cilium -l "id.service2" tgraf/netperf curl -si 'http://service1-instance1/private'
+    $ docker run --rm -ti --net cilium -l "id.service2" cilium/demo-client curl -si 'http://service1-instance1/private'
 
 FIXME:  both requests return with no output.  So this is not working as expected.
 
 Step 9: Clean-Up
 ---------------
 
-When you are done with the setup and want to tear-down the Cilium + Docker VM, open a terminal, cd to the cilium directory
+When you are done with the setup and want to tear-down the Cilium + Docker VM,
+and destroy all local state (e.g., the VM disk image), open a terminal, cd to
+the cilium directory
 and run:
 
 ::
@@ -295,7 +297,7 @@ and run:
 
 You can always re-create the VM using the steps described above.
 
-
-
-
+If instead you instead just want to shut down the VM but may use it later,
+"vagrant halt cilium-master" will work, and you can start it again later
+using the contrib/vagrant/start.sh script.
 
