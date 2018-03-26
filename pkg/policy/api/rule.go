@@ -387,6 +387,11 @@ type L7Rules struct {
 	//
 	// +optional
 	Kafka []PortRuleKafka `json:"kafka,omitempty"`
+
+	// BinaryMemcache-specific rules.
+	//
+	// +optional
+	BinaryMemcache []PortRuleMemcache `json:"binary-memcache,omitempty"`
 }
 
 // PortRuleHTTP is a list of HTTP protocol constraints. All fields are
@@ -702,4 +707,58 @@ func (kr *PortRuleKafka) MapRoleToAPIKey() error {
 	default:
 		return fmt.Errorf("Invalid Kafka Role %s", kr.Role)
 	}
+}
+
+// PortRuleMemcache is a list of Memcache protocol constraints. All fields are
+// optional, if all fields are empty or missing, the rule will match all
+// Memcache messages.
+// NOTE: this struct is used for both binary and text memcache protocols
+type PortRuleMemcache struct {
+	// OpCode is a case-insensitive string matched against the op-code of a
+	// request, e.g. "get", "set", "add", et al
+	// Reference: https://github.com/couchbase/memcached/blob/master/docs/BinaryProtocol.md
+	//
+	// If omitted or empty then all op-codes are allowed.
+	//
+	// +optional
+	OpCode string `json:"opCode,omitempty"`
+}
+
+var MemcacheOpCodeMap = map[string]byte{
+	"get":             0,
+	"set":             1,
+	"add":             2,
+	"replace":         3,
+	"delete":          4,
+	"increment":       5,
+	"decrement":       6,
+	"quit":            7,
+	"flush":           8,
+	"getq":            9,
+	"noop":            10,
+	"version":         11,
+	"getk":            12,
+	"getkq":           13,
+	"append":          14,
+	"prepend":         15,
+	"stat":            16,
+	"setq":            17,
+	"addq":            18,
+	"replaceq":        19,
+	"deleteq":         20,
+	"incrementq":      21,
+	"decrementq":      22,
+	"quiteq":          23,
+	"flushq":          24,
+	"appendq":         25,
+	"prependq":        26,
+	"verbosity":       27,
+	"touch":           28,
+	"gat":             29,
+	"gatq":            30,
+	"helo":            31,
+	"sasl-list-mechs": 32,
+	"sasl-auth":       33,
+	"sasl-step":       34,
+	// TODO more keys...
 }

@@ -219,6 +219,9 @@ func (kr *PortRuleKafka) Sanitize() error {
 }
 
 func (pr *L7Rules) sanitize() error {
+
+	// TODO: sanitize BinaryMemcache rules
+
 	if (pr.HTTP != nil) && (pr.Kafka != nil) {
 		return fmt.Errorf("multiple L7 protocol rule types specified in single rule")
 	}

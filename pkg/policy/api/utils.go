@@ -21,7 +21,7 @@ import (
 
 // Len returns the total number of rules inside `L7Rules`.
 func (rules *L7Rules) Len() int {
-	return len(rules.HTTP) + len(rules.Kafka)
+	return len(rules.HTTP) + len(rules.Kafka) + len(rules.BinaryMemcache)
 }
 
 // Exists returns true if the HTTP rule already exists in the list of rules
@@ -52,10 +52,21 @@ func (h *PortRuleHTTP) Equal(o PortRuleHTTP) bool {
 	return true
 }
 
-// Exists returns true if the HTTP rule already exists in the list of rules
+// Exists returns true if the Kafka rule already exists in the list of rules
 func (k *PortRuleKafka) Exists(rules L7Rules) bool {
 	for _, existingRule := range rules.Kafka {
 		if k.Equal(existingRule) {
+			return true
+		}
+	}
+
+	return false
+}
+
+// Exists returns true if the Memcache rule already exists in the list of rules
+func (m *PortRuleMemcache) Exists(rules L7Rules) bool {
+	for _, existingRule := range rules.BinaryMemcache {
+		if m.Equal(existingRule) {
 			return true
 		}
 	}
@@ -67,6 +78,12 @@ func (k *PortRuleKafka) Exists(rules L7Rules) bool {
 func (k *PortRuleKafka) Equal(o PortRuleKafka) bool {
 	return k.APIVersion == o.APIVersion && k.APIKey == o.APIKey &&
 		k.Topic == o.Topic && k.ClientID == o.ClientID && k.Role == o.Role
+}
+
+// Equal returns true if both rules are equal
+func (m *PortRuleMemcache) Equal(o PortRuleMemcache) bool {
+	// TODO: update when we add key support
+	return m.OpCode == m.OpCode
 }
 
 // Validate returns an error if the layer 4 protocol is not valid

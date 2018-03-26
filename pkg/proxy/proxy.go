@@ -359,6 +359,9 @@ retryCreatePort:
 		case policy.ParserTypeKafka:
 			redir.implementation, err = createKafkaRedirect(redir, kafkaConfiguration{})
 
+		case policy.ParserTypeBinaryMemcache:
+			redir.implementation, err = createBmcRedirect(redir, bmcConfiguration{})
+
 		case policy.ParserTypeHTTP:
 			redir.implementation, err = createEnvoyRedirect(redir, p.stateDir, p.XDSServer, wg)
 
@@ -452,6 +455,8 @@ func (r *Redirect) getRulesModel() []string {
 			jsonRule, _ = json.Marshal(rule.HTTP)
 		case policy.ParserTypeKafka:
 			jsonRule, _ = json.Marshal(rule.Kafka)
+		case policy.ParserTypeBinaryMemcache:
+			jsonRule, _ = json.Marshal(rule.BinaryMemcache)
 		}
 
 		model[idx] = fmt.Sprintf("from %s: %s", string(jsonSelector), string(jsonRule))

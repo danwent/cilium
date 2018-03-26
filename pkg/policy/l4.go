@@ -82,6 +82,8 @@ const (
 	ParserTypeHTTP L7ParserType = "http"
 	// ParserTypeKafka specifies a Kafka parser type
 	ParserTypeKafka L7ParserType = "kafka"
+	// ParserTypeBinaryMemcache specifies a Binary Memcache parser type
+	ParserTypeBinaryMemcache L7ParserType = "binary-memcache"
 )
 
 type L4Filter struct {
@@ -116,6 +118,7 @@ func (dm L7DataMap) GetRelevantRules(identity *identity.Identity) api.L7Rules {
 				matched++
 				rules.HTTP = append(rules.HTTP, endpointRules.HTTP...)
 				rules.Kafka = append(rules.Kafka, endpointRules.Kafka...)
+				rules.BinaryMemcache = append(rules.BinaryMemcache, endpointRules.BinaryMemcache...)
 			}
 		}
 	}
@@ -126,7 +129,6 @@ func (dm L7DataMap) GetRelevantRules(identity *identity.Identity) api.L7Rules {
 			return rules
 		}
 	}
-
 	return rules
 }
 
@@ -176,6 +178,8 @@ func CreateL4Filter(fromEndpoints []api.EndpointSelector, rule api.PortRule, por
 			l4.L7Parser = ParserTypeHTTP
 		case len(rule.Rules.Kafka) > 0:
 			l4.L7Parser = ParserTypeKafka
+		case len(rule.Rules.BinaryMemcache) > 0:
+			l4.L7Parser = ParserTypeBinaryMemcache
 		}
 
 		l4.L7RulesPerEp.addRulesForEndpoints(*rule.Rules, fromEndpoints)
