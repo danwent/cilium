@@ -53,7 +53,7 @@ import (
 //                   they are the root process started in the i
 //                   container by docker run.
 // {container_name : "nodejs" } - Allows connections from the pod's 'nodejs' container
-// {container_name " "nodejs", type "exec" }  - Allow connections from the 'nodejs'
+// {container_name : "nodejs", type: "exec" }  - Allow connections from the 'nodejs'
 //                                                container, but only processes spawned via
 //                                                docker exec.
 
@@ -185,8 +185,6 @@ func (f *factory) Create(connection *proxylib.Connection) proxylib.Parser {
 	reqData := dockerVisibilityRequestData{processType: dvInfo.Type,
 		containerName: dvInfo.ContainerName}
 
-	//reqData := dockerVisibilityRequestData{processType: "run",
-	//	containerName: "foo"}
 	matches := true
 	access_log_entry_type := cilium.EntryType_Request
 
