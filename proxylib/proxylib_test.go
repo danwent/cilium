@@ -656,7 +656,7 @@ func TestAllowAllPolicyL3Egress(t *testing.T) {
 	}
 
 	//logging.ToggleDebugLogs(true)
-        //log.SetLevel(log.DebugLevel)
+	//log.SetLevel(log.DebugLevel)
 
 	insertPolicyText(t, mod, "1", []string{`
 		name: "FooBar"

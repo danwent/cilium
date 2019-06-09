@@ -16,15 +16,15 @@ package dockervisibility
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
-    "io/ioutil"
-	"regexp"
-    "net/http"
-    "encoding/json"
 	"github.com/cilium/cilium/proxylib/proxylib"
-    "time"
 	"github.com/cilium/proxy/go/cilium/api"
 	log "github.com/sirupsen/logrus"
+	"io/ioutil"
+	"net/http"
+	"regexp"
+	"time"
 )
 
 //
@@ -151,32 +151,31 @@ type dockerVisibilityInfo struct {
 	ContainerImage string `json:"container_image"`
 	ContainerID    string `json:"container_id"`
 	Entrypoint     string `json:"entrypoint"`
-	Privileged     bool `json:"privileged"`
+	Privileged     bool   `json:"privileged"`
 }
 
 func (f *factory) Create(connection *proxylib.Connection) proxylib.Parser {
 	log.Debugf("DockerVisibilityParserFactory: Create: %v", connection)
 
-    // give time to gather metadata
-    time.Sleep(100 * time.Millisecond)
+	// give time to gather metadata
+	time.Sleep(100 * time.Millisecond)
 
 	log.Infof("lookup docker metadata for src address: '%s'", connection.SrcAddr)
-    url := "http://localhost:9999/lookup.json"
-    httpClient := http.Client{
+	url := "http://localhost:9999/lookup.json"
+	httpClient := http.Client{
 		Timeout: time.Second * 2, // Maximum of 2 secs
 	}
-    body_buf := bytes.NewBufferString(connection.SrcAddr)
-    req, _ := http.NewRequest(http.MethodGet, url, body_buf)
+	body_buf := bytes.NewBufferString(connection.SrcAddr)
+	req, _ := http.NewRequest(http.MethodGet, url, body_buf)
 	res, getErr := httpClient.Do(req)
 	if getErr != nil {
 		log.Fatal(getErr)
 	}
 
 	body, _ := ioutil.ReadAll(res.Body)
-    log.Infof("received lookup response '%s'", body)
+	log.Infof("received lookup response '%s'", body)
 
-
-    dvInfo := dockerVisibilityInfo{}
+	dvInfo := dockerVisibilityInfo{}
 	jsonErr := json.Unmarshal(body, &dvInfo)
 	if jsonErr != nil {
 		log.Fatal(jsonErr)
@@ -219,9 +218,9 @@ func (p *parser) OnData(reply, endStream bool, dataArray [][]byte) (proxylib.OpT
 	data := string(bytes.Join(dataArray, []byte{}))
 
 	log.Infof("OnData: '%s'", data)
-    if len(data) == 0 {
+	if len(data) == 0 {
 		return proxylib.MORE, 1
-    }
+	}
 
 	return proxylib.PASS, len(data)
 }
