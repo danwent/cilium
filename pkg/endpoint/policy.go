@@ -442,8 +442,14 @@ func (e *Endpoint) RegenerateIfAlive(regenMetadata *regeneration.ExternalRegener
 		state := e.getState()
 		switch state {
 		case StateRestoring, StateWaitingToRegenerate:
-			e.setState(state, fmt.Sprintf("Skipped duplicate endpoint regeneration trigger due to %s", regenMetadata.Reason))
-			regen = false
+			// do not skip this regeneration unless we are sure that it's regeneration level is the least "deep".
+			// Otherwise, we might not get the deeper regeneration needed by the calling function.
+			if regenMetadata.RegenerationLevel == regeneration.RegenerateWithoutDatapath {
+				e.setState(state, fmt.Sprintf("Skipped duplicate endpoint regeneration trigger due to %s", regenMetadata.Reason))
+				regen = false
+			} else {
+				regen = true
+			}
 		default:
 			regen = e.setState(StateWaitingToRegenerate, fmt.Sprintf("Triggering endpoint regeneration due to %s", regenMetadata.Reason))
 		}
